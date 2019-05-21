@@ -12,7 +12,11 @@ Scripts with the code for each step here referred are in the correspondent folde
 
 **II - Differential Expression Evaluation in Array Data**
 
+Analysis of Microarray data was done in three cohorts from Dengue cohorts: GSE18090, GSE38246 and GSE51808. Scripts used for each of the microarrays are in the correspondent folder. Packages used were "GEOquery", "limma", "genefilter" and the "hgu133plus2.db" database for the Affymetrix Human Genome U133 Plus 2.0 Array chip.
+
 **III - Differential Expression Evaluation in RNASeq Data**
+
+Analysis of RNA-Seq data was done in three samples from Dengue cohorts: Spleen, Hepatic and Encephalon. Scripts used for each of the RNA-Seq are in the correspondet folder. The package used for this analysis was "DESeq2".
 
 **IV - Data Preparation for Drug Repurposing**
 
