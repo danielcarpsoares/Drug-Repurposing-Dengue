@@ -14,6 +14,72 @@ Scripts with the code for each step here referred are in the correspondent folde
 
 Analysis of Microarray data was done in three cohorts from Dengue cohorts: GSE18090, GSE38246 and GSE51808. Scripts used for each of the microarrays are in the correspondent folder. Packages used were "GEOquery", "limma", "genefilter" and the "hgu133plus2.db" database for the Affymetrix Human Genome U133 Plus 2.0 Array chip.
 
+Below is described as an example the code for the analysis of GSE18090, scripts for GSE38246 and GSE51808 are similar although there are some slight changes due to the different chips used.
+
+- Load of Necessary Packages
+```R
+library(GEOquery)
+library(limma)
+library(genefilter)
+library(hgu133plus2.db)
+```
+
+- Load of Data
+```
+gset <- getGEO("GSE18090", GSEMatrix =TRUE, AnnotGPL=TRUE)
+if (length(gset) > 1) idx <- grep("GPL570", attr(gset, "names")) else idx <- 1
+gset <- gset[[idx]]
+```
+
+- Remove of Duplicated Probes & Addition of Gene Annotations
+```
+gset@annotation = "hgu133plus2"
+gset <- featureFilter(gset, require.entrez = T, remove.dupEntrez = T)
+```
+
+- Addition of Metadata and Selection of Samples
+```
+fvarLabels(gset) <- make.names(fvarLabels(gset))
+
+gsms <- "XXXXXXXX111111111100000000" #x-remove; 1-infected; 0-controls
+sml <- c()
+for (i in 1:nchar(gsms)) { sml[i] <- substr(gsms,i,i) }
+
+sel <- which(sml != "X")
+sml <- sml[sel]
+gset <- gset[ ,sel]
+```
+
+- Differential Expression
+```
+exprs(gset) <- log2(exprs(gset))
+
+sml <- paste("G", sml, sep="")
+fl <- as.factor(sml)
+gset$description <- fl
+design <- model.matrix(~ description + 0, gset)
+colnames(design) <- levels(fl)
+fit <- lmFit(gset, design)
+cont.matrix <- makeContrasts(G1-G0, levels=design)
+fit2 <- contrasts.fit(fit, cont.matrix)
+fit2 <- eBayes(fit2, 0.01)
+
+tT <- topTable(fit2, adjust="fdr", sort.by="B", number=22000)
+
+tT <- subset(tT, select=c("ID","adj.P.Val","P.Value","logFC","Gene.symbol","Gene.title"))
+write.table(tT, file="matrixDE18090.txt", row.names=F, sep="\t")
+```
+
+- Selection of Up and Down Regulated Genes
+```
+down <- tT[,"logFC"]<0
+downreg <- tT[down,]
+write.table(downreg$Gene.symbol, file="downreg18090.txt", row.names=F, sep="\t")
+
+up <- tT[,"logFC"]>0
+upreg <- tT[up,]
+write.table(upreg$Gene.symbol, file="upreg18090.txt", row.names=F, sep="\t")
+```
 **III - Differential Expression Evaluation in RNASeq Data**
 
 Analysis of RNA-Seq data was done in three samples from Dengue cohorts: Spleen, Hepatic and Encephalon. Scripts used for each of the RNA-Seq are in the correspondet folder. The package used for this analysis was "DESeq2".
