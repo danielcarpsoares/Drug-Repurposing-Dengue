@@ -84,6 +84,72 @@ write.table(upreg$Gene.symbol, file="upreg18090.txt", row.names=F, sep="\t")
 
 Analysis of RNA-Seq data was done in three samples from Dengue cohorts: Spleen, Hepatic and Encephalon. Scripts used for each of the RNA-Seq are in the correspondet folder. The package used for this analysis was "DESeq2".
 
+Below is described as an example the code for the analysis of the Spleen data, scripts for Hepatic and Encephalic samples are similar.
+
+- Load of Necessary Packages
+```
+library("DESeq2")
+```
+
+- Upload of Data and Selection of Samples
+```
+data <- read.delim("alinhamentoALL.txt", stringsAsFactors=FALSE, sep = "\t")
+
+dataUnique <- matrix(as.integer(unlist(data[,2:dim(data)[2]])), nrow = dim(data)[1])
+
+rownames(dataUnique) <- data[,1]
+
+colnames(dataUnique) <- colnames(data[,2:dim(data)[2]])
+
+alinhamento <- c("global", "local", "global", "local", "global", "local","global", "local",
+                 "global", "local", "global", "local", "global", "local", "global", "local",
+                 "global", "local", "global", "local", "global", "local", "global", "local",
+                 "global", "local", "global", "local", "global", "local", "local", "global",
+                 "local", "global", "local", "global", "local", "global", "local", "global",
+                 "local", "local", "global", "local", "global", "local", "global", "global" )
+
+tissue <- c("Ba", "Ba", "Hep", "Hep", "Ba", "Ba", "Enc", "Enc", "Hep", "Hep", "Ba", "Ba",
+            "Enc", "Enc", "Hep", "Hep", "Ba", "Ba", "Enc", "Enc", "Hep", "Hep", "Ba", "Ba",
+            "Hep", "Hep", "Ba", "Ba", "Hep", "Hep", "Ba", "Enc", "Enc", "Hep", "Hep", "Ba", 
+            "Ba","Enc", "Enc", "Hep", "Hep", "Hep","Ba", "Ba", "Enc", "Enc", "Hep", "Ba")
+
+baslocal <- c(2,6,12,18,24,28,31,37,44)
+
+dataUnique <- dataUnique[,baslocal]
+
+###remover individuos 875 e 900
+dataUniquelocal <- dataUnique[,-c(5,6)]
+```
+
+- Defenition of Groups and Creation of DESeq Object
+```
+disease_state <- c("Infected","Infected","Infected","Infected",
+                   "Control","Control","Control")
+
+coldata <- data.frame(col.names = colnames(dataUniquelocal),
+                      group = disease_state)
+
+DESeq2Table <- DESeqDataSetFromMatrix(dataUniquelocal, colData = coldata, design = ~group)
+```
+
+- Differential Expression
+``` 
+colData(DESeq2Table)$condition <- factor(colData(DESeq2Table)$group)
+
+DESeq2Table <- estimateSizeFactors(DESeq2Table)
+DESeq2Table <- estimateDispersions(DESeq2Table)
+plotDispEsts(DESeq2Table)
+
+DESeq2Table <- nbinomWaldTest(DESeq2Table)
+DESeq2Res <- results(DESeq2Table, contrast=c("group","Infected","Control"),
+                     pAdjustMethod = "BH")
+
+DESeq2Res <- DESeq2Res[ !is.na(DESeq2Res$padj), ]
+plotMA(DESeq2Res)
+
+DESeq2Res_sig <- DESeq2Res[ DESeq2Res$padj < 0.05, ]
+DESeq2Res_sig <- DESeq2Res_sig[ order(DESeq2Res_sig$padj), ]
+```
 **IV - Data Preparation for Drug Repurposing**
 
 Selection of genes to be inputted in CMap. Scripts with code for the selection of genes with common patterns in two of the three analysed microarrays.
