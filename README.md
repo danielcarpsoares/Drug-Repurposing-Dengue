@@ -1,6 +1,6 @@
 # Drug Repurposing Dengue
 
-Repository with code for the analysis of Microarray and RNA-Seq data from Dengue cohorts
+Repository with code for the analysis of Microarray and RNA-Seq data from Dengue cohorts.
 
 **I - Introduction**
 
@@ -20,4 +20,8 @@ Analysis of RNA-Seq data was done in three samples from Dengue cohorts: Spleen, 
 
 **IV - Data Preparation for Drug Repurposing**
 
+Selection of genes to be inputted in CMap. Scripts with code for the selection of genes with common patterns in two of the three analysed microarrays.
+
 **V - Plot Creation**
+
+Creation of plots for the demonstration of reesults. Volcano plots, barplots and Venn diagrams were created using the "ggplot2" package.
