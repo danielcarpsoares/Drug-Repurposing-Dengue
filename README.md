@@ -164,6 +164,8 @@ write.table(file="downregulatedBA.txt", row.names(down), sep="\t")
 
 Selection of genes to be inputted in CMap. Scripts with code for the selection of genes with common patterns in two of the three analysed microarrays.
 
+Below is described the code used for discovering the up-regulated genes. In the corresponding folder there is a similar script to obtain the down-regulated genes.
+
 - Load Necessary Packages
 ```
 library(dplyr)
