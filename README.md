@@ -164,6 +164,39 @@ write.table(file="downregulatedBA.txt", row.names(down), sep="\t")
 
 Selection of genes to be inputted in CMap. Scripts with code for the selection of genes with common patterns in two of the three analysed microarrays.
 
+- Load Necessary Packages
+```
+library(dplyr)
+```
+
+- Upload Files from Differential Expression
+```
+up38246 <- read.delim("upreg38246.txt", header = F)
+up51808 <- read.delim("upreg51808.txt", header = F)
+up18090 <- read.delim("upreg18090.txt", header = F)
+```
+
+- Get Common Genes from the 3 Datasets
+```
+common38246_51808 <- intersect(up38246$V1, up51808$V1)
+length(common38246_51808)
+
+common18090_38246 <- intersect(up18090$V1, up38246$V1)
+length(common18090_38246)
+
+common18090_51808 <- intersect(up18090$V1, up51808$V1)
+length(common18090_51808)
+
+common18090_51808_38246 <- intersect(common18090_38246, common38246_51808)
+length(common18090_51808_38246)
+
+upgenes <- append(common18090_38246, common18090_51808)
+upgenes <- append(upgenes, common38246_51808)
+upgenes <- unique(upgenes)
+
+write.table(upgenes, file="upgenes.txt", row.names=F, sep="\t")
+```
+
 **V - Plot Creation**
 
 Creation of plots for the demonstration of reesults. Volcano plots, barplots and Venn diagrams were created using the "ggplot2" package.
