@@ -150,6 +150,16 @@ plotMA(DESeq2Res)
 DESeq2Res_sig <- DESeq2Res[ DESeq2Res$padj < 0.05, ]
 DESeq2Res_sig <- DESeq2Res_sig[ order(DESeq2Res_sig$padj), ]
 ```
+
+- Selection of Up and Down Regulated Genes
+```
+up <- DESeq2Res_sig[DESeq2Res_sig$log2FoldChange>0,]
+down <- DESeq2Res_sig[DESeq2Res_sig$log2FoldChange<0,]
+
+write.table(file="genesDEBA.txt", DESeq2Res, col.names=T, row.names=T, sep="\t", quote=F)
+write.table(file="upregulatedBA.txt", row.names(up), sep = "\t")
+write.table(file="downregulatedBA.txt", row.names(down), sep="\t")
+```
 **IV - Data Preparation for Drug Repurposing**
 
 Selection of genes to be inputted in CMap. Scripts with code for the selection of genes with common patterns in two of the three analysed microarrays.
