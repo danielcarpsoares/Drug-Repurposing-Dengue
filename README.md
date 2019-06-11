@@ -6,7 +6,7 @@ Repository with code for the analysis of Microarray and RNA-Seq data from Dengue
 
 The workflow here described for the analysis of Microarray and RNA-Seq was performed in R. Many packages specific for Bioinformatic 
 analysis were used such as "limma" or "DESeq2". Below are briefly summarized the workflows for the differential expression of Microarray
-and RNA-Seq data as well as the data preparation to be used in CMap and all the plots created. 
+and RNA-Seq data as well as the data preparation to be used in CMap. 
 
 Scripts with the code for each step here referred are in the correspondent folders.
 
@@ -198,7 +198,3 @@ upgenes <- unique(upgenes)
 
 write.table(upgenes, file="upgenes.txt", row.names=F, sep="\t")
 ```
-
-**V - Plot Creation**
-
-Creation of plots for the demonstration of reesults. Volcano plots, barplots and Venn diagrams were created using the "ggplot2" package.
